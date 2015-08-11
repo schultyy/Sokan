@@ -10,10 +10,9 @@ pub fn from_yaml(yaml_file: String) -> Vec<String> {
     let yaml_commands = default_command_list.as_vec().unwrap();
 
     let mut result_commands = Vec::new();
-
-    for element in yaml_commands {
-        result_commands.push(element.as_str().unwrap().to_string());
-    }
+    result_commands.extend(
+      yaml_commands.iter().map(|e| element.as_str().unwrap().to_string()
+    )
 
     result_commands
 }
