@@ -1,0 +1,2 @@
+default:
+  - sudo yum clean all
