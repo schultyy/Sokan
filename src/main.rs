@@ -1,5 +1,6 @@
 use std::io::prelude::*;
 use std::fs::File;
+mod configuration;
 
 fn main() {
     println!("sokan");
@@ -17,4 +18,7 @@ fn main() {
         Err(error) => println!("fail"),
         _ => { }
     }
+
+    let commands = configuration::from_yaml(yaml_file.to_string());
+    println!("{:?}", commands);
 }
