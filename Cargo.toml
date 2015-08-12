@@ -3,4 +3,4 @@ name = "sokan"
 version = "0.1.0"
 authors = ["Jan Schulte <hello@unexpected-co.de>"]
 [dependencies]
-yaml-rust = "*"
+yaml-rust = "0.2.*"
