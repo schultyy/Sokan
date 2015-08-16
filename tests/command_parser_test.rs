@@ -11,3 +11,14 @@ fn parses_non_sudo_without_args() {
     assert_eq!(cmd.command, "ls");
     assert_eq!(cmd.args.is_empty(), true);
 }
+
+#[test]
+fn parses_non_sudo_with_args() {
+    let cmd_str = "ls -al";
+
+    let cmd = command_parser::parse(cmd_str.to_string());
+
+    assert_eq!(cmd.sudo, false);
+    assert_eq!(cmd.command, "ls");
+    assert_eq!(cmd.args, vec!["-al"]);
+}
