@@ -22,3 +22,14 @@ fn parses_non_sudo_with_args() {
     assert_eq!(cmd.command, "ls");
     assert_eq!(cmd.args, vec!["-al"]);
 }
+
+#[test]
+fn parses_sudo_without_args() {
+    let cmd_str = "sudo su";
+
+    let cmd = command_parser::parse(cmd_str.to_string());
+
+    assert_eq!(cmd.sudo, true);
+    assert_eq!(cmd.command, "su");
+    assert_eq!(cmd.args.is_empty(), true);
+}
