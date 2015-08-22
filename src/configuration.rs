@@ -3,7 +3,8 @@ use self::yaml_rust::{YamlLoader, Yaml};
 use command;
 
 pub struct Configuration {
-    pub commands: Vec<command::Command>
+    pub commands: Vec<command::Command>,
+    pub packages: Vec<String>
 }
 
 pub fn from_yaml(yaml_file: String) -> Configuration {
@@ -24,6 +25,7 @@ pub fn from_yaml(yaml_file: String) -> Configuration {
     }
 
     Configuration {
-        commands: yaml_commands
+        commands: yaml_commands,
+        packages: Vec::new()
     }
 }

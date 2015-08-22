@@ -31,3 +31,14 @@ fn returns_configuration_with_empty_list_of_commands() {
     let configuration = configuration::from_yaml(yaml_file.to_string());
     assert_eq!(configuration.commands.is_empty(), true);
 }
+
+#[test]
+fn test_returns_configuration_with_empty_list_of_packages() {
+    let yaml_file = "
+    default:
+        commands:
+        packages:
+    ";
+    let configuration = configuration::from_yaml(yaml_file.to_string());
+    assert_eq!(configuration.packages.is_empty(), true);
+}
