@@ -21,3 +21,13 @@ fn returns_configuration_with_list_of_commands() {
     assert_eq!(expected.command, actual.command);
     assert_eq!(expected.args, actual.args);
 }
+
+#[test]
+fn returns_configuration_with_empty_list_of_commands() {
+    let yaml_file = "
+    default:
+      commands:
+    ";
+    let configuration = configuration::from_yaml(yaml_file.to_string());
+    assert_eq!(configuration.commands.is_empty(), true);
+}
