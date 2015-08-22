@@ -21,12 +21,9 @@ fn main() {
         _ => { }
     }
 
-    let commands = configuration::from_yaml(yaml_file.to_string());
-    println!("{:?}", commands);
-    let mut cmd: String;
-    match commands.first() {
-        Some(first) => cmd = first.clone(),
-        None => cmd = String::new()
+    let mut commands = configuration::from_yaml(yaml_file.to_string());
+    commands.reverse();
+    while let Some(cmd) = commands.pop() {
+        shell::run_command(cmd);
     }
-    shell::run_command(cmd);
 }
