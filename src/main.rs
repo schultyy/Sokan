@@ -3,6 +3,7 @@ use std::fs::File;
 mod configuration;
 mod shell;
 mod command;
+mod output;
 
 fn main() {
     println!("sokan");
@@ -25,6 +26,6 @@ fn main() {
     commands.reverse();
     while let Some(cmd) = commands.pop() {
         let shellout = shell::run_command(cmd);
-        println!("{:?}", shellout.to_string());
+        output::print_shellout(shellout);
     }
 }
