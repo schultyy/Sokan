@@ -27,7 +27,7 @@ fn main() {
     configuration.commands.reverse();
 
     while let Some(cmd) = configuration.commands.pop() {
-        let shellout = shell::run_command(&cmd);
+        let shellout = shell::run(&cmd);
         output::print_shellout(&cmd, &shellout);
         let exit_status = shellout.status.clone();
         if exit_status.success() == false {
