@@ -1,8 +1,9 @@
 use std::process::Output;
 use std::process::ExitStatus;
+use command;
 
-pub fn print_shellout(command: String, shellout: Output) {
-    println!("Executed {:?}", command);
+pub fn print_shellout(command: &command::Command, shellout: &Output) {
+    println!("Executed {:?}", command.command);
     let exit_status = shellout.status;
     match exit_status.success() {
         true => {

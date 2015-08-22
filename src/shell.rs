@@ -1,11 +1,8 @@
-use std::process::Command;
-use std::process::Output;
+use std::process::{Command, Output};
 use command;
 
-pub fn run_command(command_str: &String) -> Output {
-    let command = command::parse(command_str.to_string());
-
-    let output_handle = Command::new(command.command)
+pub fn run_command(command: &command::Command) -> Output {
+    let output_handle = Command::new(command.command.to_string())
         .args(&command.args)
         .output()
         .unwrap_or_else(|e| { panic!("failed to execute process: {}", e) });

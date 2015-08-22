@@ -26,6 +26,6 @@ fn main() {
     commands.reverse();
     while let Some(cmd) = commands.pop() {
         let shellout = shell::run_command(&cmd);
-        output::print_shellout(cmd.to_string(), shellout);
+        output::print_shellout(&cmd, &shellout);
     }
 }

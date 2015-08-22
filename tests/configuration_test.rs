@@ -1,5 +1,7 @@
 #[path="../src/configuration.rs"]
 mod configuration;
+#[path="../src/command.rs"]
+mod command;
 
 #[test]
 fn returns_list_of_commands() {
@@ -8,5 +10,13 @@ fn returns_list_of_commands() {
       - sudo apt-get update
     ";
     let commands = configuration::from_yaml(yaml_file.to_string());
-    assert_eq!(commands, ["sudo apt-get update"]);
+    let expected = command::Command {
+        sudo: true,
+        command: "apt-get".to_string(),
+        args: vec!["update".to_string()]
+    };
+    let actual = commands.first().unwrap();
+    assert_eq!(expected.sudo, actual.sudo);
+    assert_eq!(expected.command, actual.command);
+    assert_eq!(expected.args, actual.args);
 }
