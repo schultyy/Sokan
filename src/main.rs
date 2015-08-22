@@ -1,6 +1,8 @@
 use std::io::prelude::*;
 use std::fs::File;
 mod configuration;
+mod shell;
+mod command;
 
 fn main() {
     println!("sokan");
@@ -21,4 +23,10 @@ fn main() {
 
     let commands = configuration::from_yaml(yaml_file.to_string());
     println!("{:?}", commands);
+    let mut cmd: String;
+    match commands.first() {
+        Some(first) => cmd = first.clone(),
+        None => cmd = String::new()
+    }
+    shell::run_command(cmd);
 }
