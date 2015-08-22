@@ -4,18 +4,18 @@ mod configuration;
 mod command;
 
 #[test]
-fn returns_list_of_commands() {
+fn returns_configuration_with_list_of_commands() {
     let yaml_file = "
     default:
       - sudo apt-get update
     ";
-    let commands = configuration::from_yaml(yaml_file.to_string());
+    let configuration = configuration::from_yaml(yaml_file.to_string());
     let expected = command::Command {
         sudo: true,
         command: "apt-get".to_string(),
         args: vec!["update".to_string()]
     };
-    let actual = commands.first().unwrap();
+    let actual = configuration.commands.first().unwrap();
     assert_eq!(expected.sudo, actual.sudo);
     assert_eq!(expected.command, actual.command);
     assert_eq!(expected.args, actual.args);
