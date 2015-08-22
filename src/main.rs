@@ -24,6 +24,7 @@ fn main() {
     let mut commands = configuration::from_yaml(yaml_file.to_string());
     commands.reverse();
     while let Some(cmd) = commands.pop() {
-        shell::run_command(cmd);
+        let shellout = shell::run_command(cmd);
+        println!("{:?}", shellout.to_string());
     }
 }
