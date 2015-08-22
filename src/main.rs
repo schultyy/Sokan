@@ -1,5 +1,6 @@
 use std::io::prelude::*;
 use std::fs::File;
+use std::process;
 mod configuration;
 mod shell;
 mod command;
@@ -24,8 +25,14 @@ fn main() {
 
     let mut commands = configuration::from_yaml(yaml_file.to_string());
     commands.reverse();
+
     while let Some(cmd) = commands.pop() {
         let shellout = shell::run_command(&cmd);
         output::print_shellout(&cmd, &shellout);
+        let exit_status = shellout.status.clone();
+        if exit_status.success() == false {
+            let code = exit_status.code().unwrap();
+            process::exit(code);
+        }
     }
 }
