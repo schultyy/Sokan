@@ -7,7 +7,8 @@ mod command;
 fn returns_configuration_with_list_of_commands() {
     let yaml_file = "
     default:
-      - sudo apt-get update
+      commands:
+          - sudo apt-get update
     ";
     let configuration = configuration::from_yaml(yaml_file.to_string());
     let expected = command::Command {

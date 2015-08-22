@@ -1,7 +1,8 @@
 default:
-  - sudo yum clean all
-  - touch hello.txt
-  - echo "test" > hello.txt
-  - cat hello.txt
-  - rm hello.txt
+  commands:
+    - sudo yum clean all
+    - touch hello.txt
+    - echo "test" > hello.txt
+    - cat hello.txt
+    - rm hello.txt
 
