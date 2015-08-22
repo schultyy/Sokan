@@ -1,11 +1,11 @@
-#[path="../src/command_parser.rs"]
-mod command_parser;
+#[path="../src/command.rs"]
+mod command;
 
 #[test]
 fn parses_non_sudo_without_args() {
     let cmd_str = "ls";
 
-    let cmd = command_parser::parse(cmd_str.to_string());
+    let cmd = command::parse(cmd_str.to_string());
 
     assert_eq!(cmd.sudo, false);
     assert_eq!(cmd.command, "ls");
@@ -16,7 +16,7 @@ fn parses_non_sudo_without_args() {
 fn parses_non_sudo_with_args() {
     let cmd_str = "ls -al";
 
-    let cmd = command_parser::parse(cmd_str.to_string());
+    let cmd = command::parse(cmd_str.to_string());
 
     assert_eq!(cmd.sudo, false);
     assert_eq!(cmd.command, "ls");
@@ -27,7 +27,7 @@ fn parses_non_sudo_with_args() {
 fn parses_sudo_without_args() {
     let cmd_str = "sudo su";
 
-    let cmd = command_parser::parse(cmd_str.to_string());
+    let cmd = command::parse(cmd_str.to_string());
 
     assert_eq!(cmd.sudo, true);
     assert_eq!(cmd.command, "su");
@@ -38,7 +38,7 @@ fn parses_sudo_without_args() {
 fn parses_sudo_with_args() {
     let cmd_str = "sudo make cake";
 
-    let cmd = command_parser::parse(cmd_str.to_string());
+    let cmd = command::parse(cmd_str.to_string());
 
     assert_eq!(cmd.sudo, true);
     assert_eq!(cmd.command, "make");
