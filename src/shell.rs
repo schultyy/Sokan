@@ -2,8 +2,8 @@ use std::process::Command;
 use std::process::Output;
 use command;
 
-pub fn run_command(command_str: String) -> Output {
-    let command = command::parse(command_str);
+pub fn run_command(command_str: &String) -> Output {
+    let command = command::parse(command_str.to_string());
 
     let output_handle = Command::new(command.command)
         .args(&command.args)
