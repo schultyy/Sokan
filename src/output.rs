@@ -1,9 +1,13 @@
 use std::process::Output;
 use std::process::ExitStatus;
-use command;
+use std::fmt::Display;
 
-pub fn print_shellout(command: &command::Command, shellout: &Output) {
-    println!("Executed {}", command);
+pub fn print_shellout<T: Display>(thing: &T, shellout: &Output) {
+    println!("Executed {}", thing);
+    print_output(&shellout);
+}
+
+fn print_output(shellout: &Output) {
     let exit_status = shellout.status;
     match exit_status.success() {
         true => {

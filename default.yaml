@@ -5,4 +5,6 @@ default:
     - echo "test" > hello.txt
     - cat hello.txt
     - rm hello.txt
-
+  packages:
+    - vim
+    - git

@@ -23,16 +23,7 @@ fn main() {
         _ => { }
     }
 
-    let mut configuration = configuration::from_yaml(yaml_file.to_string());
-    configuration.commands.reverse();
-
-    while let Some(cmd) = configuration.commands.pop() {
-        let shellout = shell::run(&cmd);
-        output::print_shellout(&cmd, &shellout);
-        let exit_status = shellout.status.clone();
-        if exit_status.success() == false {
-            let code = exit_status.code().unwrap();
-            process::exit(code);
-        }
-    }
+    let configuration = configuration::from_yaml(yaml_file.to_string());
+    let exit_code = shell::provision(&configuration);
+    process::exit(exit_code);
 }
