@@ -44,7 +44,6 @@ impl Display for Command {
 
 pub fn parse(command: String) -> Command {
     let mut words: Vec<&str> = command.split_whitespace().collect();
-    let arguments: Vec<String> = vec![];
     let mut cmd:String = String::new();
     let mut sudo = false;
 
@@ -59,7 +58,7 @@ pub fn parse(command: String) -> Command {
 
     match first {
         Some(val) => cmd = val.to_string(),
-        None => cmd = String::new()
+        None => { }
     }
 
 

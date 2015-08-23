@@ -8,9 +8,9 @@ mod output;
 
 fn main() {
     println!("sokan");
-    let mut fileResult :std::fs::File;
+    let mut file_result :std::fs::File;
     match File::open("default.yaml") {
-        Ok(result) => fileResult = result,
+        Ok(result) => file_result = result,
         Err(error) => {
             println!("Error occured while accessing default.yaml: {:?}", error);
             return;
@@ -18,8 +18,8 @@ fn main() {
     }
 
     let mut yaml_file = String::new();
-    match fileResult.read_to_string(&mut yaml_file) {
-        Err(error) => println!("fail"),
+    match file_result.read_to_string(&mut yaml_file) {
+        Err(error) => println!("Failed to read default.yaml - {:?}", error),
         _ => { }
     }
 

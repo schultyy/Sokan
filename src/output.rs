@@ -1,5 +1,4 @@
 use std::process::Output;
-use std::process::ExitStatus;
 use std::fmt::Display;
 extern crate term;
 use std::io::prelude::*;
@@ -23,7 +22,7 @@ fn print_output(shellout: &Output) {
         },
         false => {
             let stderr_str = format!("==> {:?}", String::from_utf8_lossy(&shellout.stderr));
-            writeln!(stderr_terminal, "{}", stderr_str);
+            writeln!(stderr_terminal, "{}", stderr_str).unwrap();
         }
     }
     stderr_terminal.reset().unwrap();
