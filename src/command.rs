@@ -1,7 +1,24 @@
+use std::fmt::Display;
+use std::fmt::Formatter;
+use std::fmt::Result;
+
 pub struct Command {
     pub sudo: bool,
     pub command: String,
     pub args: Vec<String>
+}
+
+impl Display for Command {
+    fn fmt(&self, formatter: &mut Formatter) -> Result {
+        let mut arguments = self.args.clone();
+        arguments.reverse();
+
+        if self.sudo {
+            write!(formatter, "sudo {} {}", self.command, arguments.connect(" "))
+        } else {
+            write!(formatter, "{} {}", self.command, arguments.connect(" "))
+        }
+    }
 }
 
 pub fn parse(command: String) -> Command {

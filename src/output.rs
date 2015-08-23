@@ -3,7 +3,7 @@ use std::process::ExitStatus;
 use command;
 
 pub fn print_shellout(command: &command::Command, shellout: &Output) {
-    println!("Executed {:?}", command.command);
+    println!("Executed {}", command);
     let exit_status = shellout.status;
     match exit_status.success() {
         true => {
