@@ -57,3 +57,31 @@ fn test_returns_configuration_with_list_of_packages() {
     let configuration = configuration::from_yaml(yaml_file.to_string());
     assert_eq!(configuration.packages, vec!["vim", "git", "build-essential"]);
 }
+
+#[test]
+fn test_returns_configuration_with_install_command() {
+    let yaml_file = "
+    default:
+      commands:
+      packages:
+        - vim
+        - git
+      package_install_cmd: apt-get install -y
+      ";
+    let configuration = configuration::from_yaml(yaml_file.to_string());
+    assert_eq!(configuration.install_command, Some("apt-get install -y".to_string()));
+}
+
+#[test]
+fn test_returns_configuration_without_install_command() {
+    let yaml_file = "
+    default:
+      commands:
+      packages:
+        - vim
+        - git
+  ";
+  let configuration = configuration::from_yaml(yaml_file.to_string());
+  assert_eq!(configuration.install_command, None);
+
+}
