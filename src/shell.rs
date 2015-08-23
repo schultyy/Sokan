@@ -34,7 +34,12 @@ pub fn provision(configuration: &configuration::Configuration) -> i32 {
         }
     }
 
-    return 0;
+    exit_codes.sort();
+
+    match exit_codes.last() {
+        Some(&0) => return 0,
+        _       => return 1
+    }
 }
 
 fn install_package(package: &String) -> Output {
