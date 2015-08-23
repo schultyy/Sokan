@@ -4,3 +4,4 @@ version = "0.1.0"
 authors = ["Jan Schulte <hello@unexpected-co.de>"]
 [dependencies]
 yaml-rust = "0.2.*"
+term = "0.2"
