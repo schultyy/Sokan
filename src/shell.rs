@@ -26,6 +26,9 @@ pub fn provision(configuration: &configuration::Configuration) -> i32 {
     }
 
     while let Some(package) = packages.pop() {
+        if is_package_installed(&package) {
+            continue;
+        }
         let shellout = install_package(&package);
         output::print_shellout::<String>(&package, &shellout);
         let exit_status = shellout.status.clone();
@@ -40,6 +43,14 @@ pub fn provision(configuration: &configuration::Configuration) -> i32 {
         Some(&0) => return 0,
         _       => return 1
     }
+}
+
+fn is_package_installed(package_name: &String) -> bool {
+    let command_str = format!("yum list installed {}", package_name);
+    let output = Command::new(command_str)
+        .output()
+        .unwrap_or_else(|e| { panic!("failed to execute process: {}", e) });
+    return output.status.success();
 }
 
 fn install_package(package: &String) -> Output {
