@@ -31,6 +31,7 @@ pub fn provision(configuration: &configuration::Configuration) -> i32 {
     exit_codes.extend(&package_exit_codes[..]);
 
     let results = handle_file_resources(&configuration.files);
+    exit_codes.extend(&results[..]);
 
     exit_codes.sort();
 
@@ -59,7 +60,7 @@ fn install_packages(package_list: &Vec<String>) -> Vec<i32> {
     exit_codes
 }
 
-fn handle_file_resources(resources: &Vec<file::FileResource>) -> Vec<Result<(), Error>> {
+fn handle_file_resources(resources: &Vec<file::FileResource>) -> Vec<i32> {
     let mut results = Vec::new();
     for resource in resources {
         let result = resource.write_file();
@@ -67,11 +68,13 @@ fn handle_file_resources(resources: &Vec<file::FileResource>) -> Vec<Result<(), 
             Ok(_) =>  {
                 let msg = format!("==> Wrote file {}", resource.path);
                 output::print_message(msg, output::MessageType::Stdout);
+                results.push(0);
             },
             Err(err) => {
                 let msg = format!("==> Error while writing file {}", resource.path);
                 output::print_message(msg, output::MessageType::Stderr);
                 output::print_message(format!("==> {}", err), output::MessageType::Stderr);
+                results.push(1);
             }
         }
     }
