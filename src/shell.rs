@@ -62,7 +62,18 @@ fn install_packages(package_list: &Vec<String>) -> Vec<i32> {
 fn handle_file_resources(resources: &Vec<file::FileResource>) -> Vec<Result<(), Error>> {
     let mut results = Vec::new();
     for resource in resources {
-        results.push(resource.write_file());
+        let result = resource.write_file();
+        match result {
+            Ok(_) =>  {
+                let msg = format!("==> Wrote file {}", resource.path);
+                output::print_message(msg, output::MessageType::Stdout);
+            },
+            Err(err) => {
+                let msg = format!("==> Error while writing file {}", resource.path);
+                output::print_message(msg, output::MessageType::Stderr);
+                output::print_message(format!("==> {}", err), output::MessageType::Stderr);
+            }
+        }
     }
     results
 }
