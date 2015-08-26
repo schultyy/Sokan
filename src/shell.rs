@@ -1,4 +1,5 @@
 use std::process::{Command, Output};
+use std::io::Error;
 use command;
 use configuration;
 use output;
@@ -26,6 +27,24 @@ pub fn provision(configuration: &configuration::Configuration) -> i32 {
         }
     }
 
+    let package_exit_codes = install_packages(&packages);
+    exit_codes.extend(&package_exit_codes[..]);
+
+    let results = handle_file_resources(&configuration.files);
+
+    exit_codes.sort();
+
+    match exit_codes.last() {
+        Some(&0) => return 0,
+        None     => return 0,
+        _        => return 1
+    }
+}
+
+fn install_packages(package_list: &Vec<String>) -> Vec<i32> {
+    let mut exit_codes = Vec::new();
+    let mut packages = package_list.clone();
+
     while let Some(package) = packages.pop() {
         if is_package_installed(&package) {
             continue;
@@ -37,22 +56,15 @@ pub fn provision(configuration: &configuration::Configuration) -> i32 {
             exit_codes.push(exit_status.code().unwrap());
         }
     }
-
-    handle_file_resources(&configuration.files);
-
-    exit_codes.sort();
-
-    match exit_codes.last() {
-        Some(&0) => return 0,
-        None     => return 0,
-        _        => return 1
-    }
+    exit_codes
 }
 
-fn handle_file_resources(resources: &Vec<file::FileResource>) {
+fn handle_file_resources(resources: &Vec<file::FileResource>) -> Vec<Result<(), Error>> {
+    let mut results = Vec::new();
     for resource in resources {
-        resource.write_file();
+        results.push(resource.write_file());
     }
+    results
 }
 
 fn is_package_installed(package_name: &String) -> bool {
