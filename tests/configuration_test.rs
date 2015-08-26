@@ -96,9 +96,24 @@ fn test_returns_configuration_with_a_file_resource() {
         -
           path: '/home/Jane/hello.txt'
           content: 'Hi from John'
-          mode: 0666
     ";
 
     let configuration = configuration::from_yaml(yaml_file.to_string());
     assert_eq!(configuration.files.len(), 1);
+}
+
+#[test]
+fn test_returns_configuration_with_a_file_resource_has_all_properties() {
+    let yaml_file = "
+    default:
+      files:
+        -
+          path: '/home/Jane/hello.txt'
+          content: 'Hi from John'
+    ";
+
+    let configuration = configuration::from_yaml(yaml_file.to_string());
+    let file = configuration.files.first().unwrap();
+    assert_eq!(file.path, "/home/Jane/hello.txt");
+    assert_eq!(file.content, "Hi from John");
 }

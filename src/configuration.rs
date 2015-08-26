@@ -10,12 +10,27 @@ pub struct Configuration {
     pub install_command: Option<String>
 }
 
+fn convert_yaml_string(yaml_str: &yaml_rust::yaml::Yaml) -> String {
+    match yaml_str.as_str() {
+        Some(s) => {
+            return s.to_string()
+        },
+        None => {
+            return String::new();
+        }
+    }
+}
+
 fn extract_file_resources(file_list: &yaml_rust::yaml::Yaml) -> Vec<file::File> {
     let mut file_resources = Vec::new();
+    println!("{:?}", file_list);
     match file_list.as_vec() {
         Some(lst) => {
             file_resources = lst.iter()
-                .map(|e| file::File)
+                .map(|e| file::File{
+                    content: convert_yaml_string(e.as_hash().unwrap().get(&Yaml::from_str("content")).unwrap()),
+                    path: convert_yaml_string(e.as_hash().unwrap().get(&Yaml::from_str("path")).unwrap())
+                })
                 .collect::<Vec<_>>()
         }
         None => {}
