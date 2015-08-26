@@ -23,7 +23,6 @@ fn convert_yaml_string(yaml_str: &yaml_rust::yaml::Yaml) -> String {
 
 fn extract_file_resources(file_list: &yaml_rust::yaml::Yaml) -> Vec<file::FileResource> {
     let mut file_resources = Vec::new();
-    println!("{:?}", file_list);
     match file_list.as_vec() {
         Some(lst) => {
             file_resources = lst.iter()
