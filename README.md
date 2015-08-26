@@ -6,12 +6,6 @@ A machine get's a Yaml file which describes its final state
 
 ```yaml
 default:
-  commands:
-    - sudo yum clean all
-    - touch hello.txt
-    - echo "test" > hello.txt
-    - cat hello.txt
-    - rm hello.txt
   packages:
     - vim
     - git
