@@ -5,6 +5,7 @@ mod configuration;
 mod shell;
 mod command;
 mod output;
+mod file;
 
 fn main() {
     println!("sokan");

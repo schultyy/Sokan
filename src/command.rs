@@ -62,9 +62,11 @@ pub fn parse(command: String) -> Command {
     }
 
 
-    let arguments = words.iter()
+    let mut arguments = words.iter()
         .map(|e| e.to_string())
         .collect::<Vec<_>>();
+
+    arguments.reverse();
 
     return Command {
         sudo: sudo,

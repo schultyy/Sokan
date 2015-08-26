@@ -44,3 +44,12 @@ fn parses_sudo_with_args() {
     assert_eq!(cmd.command, "make");
     assert_eq!(cmd.args, vec!["cake"]);
 }
+
+#[test]
+fn parse_args_are_in_correct_order() {
+    let cmd_str = "yum clean all";
+
+    let cmd = command::parse(cmd_str.to_string());
+
+    assert_eq!(cmd.args, vec!["clean", "all"]);
+}
