@@ -2,6 +2,8 @@
 mod configuration;
 #[path="../src/command.rs"]
 mod command;
+#[path="../src/file.rs"]
+mod file;
 
 #[test]
 fn returns_configuration_with_list_of_commands() {
@@ -84,4 +86,19 @@ fn test_returns_configuration_without_install_command() {
   let configuration = configuration::from_yaml(yaml_file.to_string());
   assert_eq!(configuration.install_command, None);
 
+}
+
+#[test]
+fn test_returns_configuration_with_a_file_resource() {
+    let yaml_file = "
+    default:
+      files:
+        -
+          path: '/home/Jane/hello.txt'
+          content: 'Hi from John'
+          mode: 0666
+    ";
+
+    let configuration = configuration::from_yaml(yaml_file.to_string());
+    assert_eq!(configuration.files.len(), 1);
 }

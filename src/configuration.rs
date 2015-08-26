@@ -1,11 +1,26 @@
 extern crate yaml_rust;
 use self::yaml_rust::{YamlLoader, Yaml};
 use command;
+use file;
 
 pub struct Configuration {
     pub commands: Vec<command::Command>,
     pub packages: Vec<String>,
+    pub files: Vec<file::File>,
     pub install_command: Option<String>
+}
+
+fn extract_file_resources(file_list: &yaml_rust::yaml::Yaml) -> Vec<file::File> {
+    let mut file_resources = Vec::new();
+    match file_list.as_vec() {
+        Some(lst) => {
+            file_resources = lst.iter()
+                .map(|e| file::File)
+                .collect::<Vec<_>>()
+        }
+        None => {}
+    }
+    return file_resources;
 }
 
 pub fn from_yaml(yaml_file: String) -> Configuration {
@@ -17,6 +32,7 @@ pub fn from_yaml(yaml_file: String) -> Configuration {
     let command_list = default_node.as_hash().unwrap().get(&Yaml::from_str("commands")).unwrap_or(&empty_list);
     let package_list = default_node.as_hash().unwrap().get(&Yaml::from_str("packages")).unwrap_or(&empty_list);
     let yaml_install_command = default_node.as_hash().unwrap().get(&Yaml::from_str("package_install_cmd"));
+    let file_list = default_node.as_hash().unwrap().get(&Yaml::from_str("files")).unwrap_or(&empty_list);
     let mut yaml_commands = Vec::new();
     let mut yaml_packages = Vec::new();
 
@@ -38,6 +54,8 @@ pub fn from_yaml(yaml_file: String) -> Configuration {
         None => { }
     }
 
+    let file_resources = extract_file_resources(file_list);
+
     let mut install_cmd = None;
 
     match yaml_install_command {
@@ -51,6 +69,7 @@ pub fn from_yaml(yaml_file: String) -> Configuration {
     Configuration {
         commands: yaml_commands,
         packages: yaml_packages,
+        files: file_resources,
         install_command: install_cmd
     }
 }
