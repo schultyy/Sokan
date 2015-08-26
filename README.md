@@ -6,6 +6,17 @@ A machine get's a Yaml file which describes its final state
 
 ```yaml
 default:
+  files:
+    -
+      path: '/home/jane/hello.txt'
+      content: 'Hello from Jane'
+    -
+      path: '/home/jane/script.sh'
+      content: >
+        #!/bin/bash
+
+        echo "Hello from Bash"
+
   packages:
     - vim
     - git
