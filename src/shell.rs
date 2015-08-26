@@ -2,6 +2,7 @@ use std::process::{Command, Output};
 use command;
 use configuration;
 use output;
+use file;
 
 pub fn provision(configuration: &configuration::Configuration) -> i32 {
 
@@ -37,11 +38,19 @@ pub fn provision(configuration: &configuration::Configuration) -> i32 {
         }
     }
 
+    handle_file_resources(&configuration.files);
+
     exit_codes.sort();
 
     match exit_codes.last() {
         Some(&0) => return 0,
         _       => return 1
+    }
+}
+
+fn handle_file_resources(resources: &Vec<file::FileResource>) {
+    for resource in resources {
+        resource.write_file();
     }
 }
 

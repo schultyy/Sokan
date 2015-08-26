@@ -6,7 +6,7 @@ use file;
 pub struct Configuration {
     pub commands: Vec<command::Command>,
     pub packages: Vec<String>,
-    pub files: Vec<file::File>,
+    pub files: Vec<file::FileResource>,
     pub install_command: Option<String>
 }
 
@@ -21,13 +21,13 @@ fn convert_yaml_string(yaml_str: &yaml_rust::yaml::Yaml) -> String {
     }
 }
 
-fn extract_file_resources(file_list: &yaml_rust::yaml::Yaml) -> Vec<file::File> {
+fn extract_file_resources(file_list: &yaml_rust::yaml::Yaml) -> Vec<file::FileResource> {
     let mut file_resources = Vec::new();
     println!("{:?}", file_list);
     match file_list.as_vec() {
         Some(lst) => {
             file_resources = lst.iter()
-                .map(|e| file::File{
+                .map(|e| file::FileResource{
                     content: convert_yaml_string(e.as_hash().unwrap().get(&Yaml::from_str("content")).unwrap()),
                     path: convert_yaml_string(e.as_hash().unwrap().get(&Yaml::from_str("path")).unwrap())
                 })
