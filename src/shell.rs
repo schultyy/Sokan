@@ -44,7 +44,8 @@ pub fn provision(configuration: &configuration::Configuration) -> i32 {
 
     match exit_codes.last() {
         Some(&0) => return 0,
-        _       => return 1
+        None     => return 0,
+        _        => return 1
     }
 }
 
