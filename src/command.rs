@@ -3,30 +3,11 @@ use std::fmt::Formatter;
 use std::fmt::Result;
 use std::clone::Clone;
 
+#[derive(Clone)]
 pub struct Command {
     pub sudo: bool,
     pub command: String,
     pub args: Vec<String>
-}
-
-impl Clone for Command {
-    fn clone(&self) -> Command {
-        Command {
-            sudo: self.sudo,
-            command: self.command.clone(),
-            args: self.args.iter()
-                            .map(|e| e.to_string())
-                            .collect::<Vec<_>>()
-        }
-    }
-
-    fn clone_from(&mut self, source: &Self) {
-        self.sudo = source.sudo;
-        self.command = source.command.clone();
-        self.args = self.args.iter()
-            .map(|e| e.to_string())
-            .collect::<Vec<_>>();
-    }
 }
 
 impl Display for Command {
