@@ -97,3 +97,17 @@ fn test_valid_configuration() {
 
     assert_eq!(configuration.is_valid(), true);
 }
+
+#[test]
+fn test_invalid_configuration() {
+    let configuration = configuration::Configuration {
+        packages: vec![],
+        files: vec![file::FileResource{
+            path: "/home/john/hello.txt".to_string(),
+            content: "hello".to_string()
+        }],
+        install_command: None
+    };
+
+    assert_eq!(configuration.is_valid(), false);
+}
