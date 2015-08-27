@@ -20,6 +20,10 @@ impl Configuration {
         }
         install_command_valid && files_valid
     }
+
+    pub fn error_messages(&self) -> Vec<String> {
+        return vec![];
+    }
 }
 
 fn convert_yaml_string(yaml_str: &yaml_rust::yaml::Yaml) -> String {
