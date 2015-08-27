@@ -1,7 +1,6 @@
 use std::fmt::Display;
 use std::fmt::Formatter;
 use std::fmt::Result;
-use std::clone::Clone;
 
 #[derive(Clone)]
 pub struct Command {
@@ -12,13 +11,15 @@ pub struct Command {
 
 impl Display for Command {
     fn fmt(&self, formatter: &mut Formatter) -> Result {
-        let mut arguments = self.args.clone();
-        arguments.reverse();
+        let arguments = self.args.iter().rev()
+                                 .map(String::as_ref)
+                                 .collect::<Vec<_>>()
+                                 .connect(" ");
 
         if self.sudo {
-            write!(formatter, "sudo {} {}", self.command, arguments.connect(" "))
+            write!(formatter, "sudo {} {}", self.command, arguments)
         } else {
-            write!(formatter, "{} {}", self.command, arguments.connect(" "))
+            write!(formatter, "{} {}", self.command, arguments)
         }
     }
 }

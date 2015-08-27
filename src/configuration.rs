@@ -11,13 +11,10 @@ pub struct Configuration {
 }
 
 fn convert_yaml_string(yaml_str: &yaml_rust::yaml::Yaml) -> String {
-    match yaml_str.as_str() {
-        Some(s) => {
-            return s.to_string()
-        },
-        None => {
-            return String::new();
-        }
+    if let Some(s) = yaml_str.as_str() {
+        s.into()
+    } else {
+        String::new()
     }
 }
 
