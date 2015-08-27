@@ -111,3 +111,14 @@ fn test_invalid_configuration() {
 
     assert_eq!(configuration.is_valid(), false);
 }
+
+#[test]
+fn test_configuration_valid_with_empty_file_list() {
+    let configuration = configuration::Configuration {
+        packages: vec![],
+        files: vec![],
+        install_command: Some("yum install -y".to_string())
+    };
+
+    assert_eq!(configuration.is_valid(), true);
+}
