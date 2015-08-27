@@ -3,7 +3,6 @@ use std::fs::File;
 use std::process;
 mod configuration;
 mod shell;
-mod command;
 mod output;
 mod file;
 
