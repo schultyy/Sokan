@@ -145,3 +145,18 @@ fn test_return_error_message_for_invalid_install_command() {
     let messages = configuration.error_messages();
     assert_eq!(messages.first(), Some(&"No install_command provided".to_string()));
 }
+
+#[test]
+fn test_returns_error_message_for_invalid_file_objects() {
+    let configuration = configuration::Configuration {
+        packages: vec![],
+        files: vec![file::FileResource{
+            path: "".into(),
+            content: "".into()
+        }],
+        install_command: Some("yum install -y".to_string())
+    };
+
+    let messages = configuration.error_messages();
+    assert_eq!(messages.len(), 2);
+}

@@ -22,11 +22,21 @@ impl Configuration {
     }
 
     pub fn error_messages(&self) -> Vec<String> {
-        if self.install_command.is_some() {
-            vec![]
-        } else {
-            vec!["No install_command provided".into()]
+        let mut error_messages = Vec::new();
+
+        if !self.install_command.is_some() {
+            error_messages.push("No install_command provided".to_string());
         }
+
+        let file_errors = self.files.iter()
+                            .flat_map(|f| f.error_messages())
+                            .collect::<Vec<_>>();
+        error_messages.extend(file_errors);
+
+        error_messages
+            .iter()
+            .map(|s| s.to_string())
+            .collect::<Vec<_>>()
     }
 }
 
