@@ -20,7 +20,7 @@ impl FileResource {
     }
 
     pub fn is_valid(&self) -> bool {
-        self.path.len() > 0 && self.content.len() > 0
+        self.error_messages().len() == 0
     }
 
     pub fn error_messages(&self) -> Vec<String> {
