@@ -5,8 +5,12 @@ use output;
 use file;
 
 pub fn provision(configuration: &configuration::Configuration) -> i32 {
-
     let mut packages = Vec::new();
+
+    if !configuration.is_valid() {
+        output::print_message(format!("==> Configuration invalid! Abort provisioning."), output::MessageType::Stderr);
+        return 1;
+    }
 
     packages.extend(configuration.packages.iter().cloned());
 
