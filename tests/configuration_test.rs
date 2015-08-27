@@ -83,3 +83,80 @@ fn test_returns_configuration_with_a_file_resource_has_all_properties() {
     assert_eq!(file.path, "/home/Jane/hello.txt");
     assert_eq!(file.content, "Hi from John");
 }
+
+#[test]
+fn test_valid_configuration() {
+    let configuration = configuration::Configuration {
+        packages: vec![],
+        files: vec![file::FileResource{
+            path: "/home/john/hello.txt".to_string(),
+            content: "hello".to_string()
+        }],
+        install_command: Some("yum install -y".to_string())
+    };
+
+    assert_eq!(configuration.is_valid(), true);
+}
+
+#[test]
+fn test_invalid_configuration() {
+    let configuration = configuration::Configuration {
+        packages: vec![],
+        files: vec![file::FileResource{
+            path: "/home/john/hello.txt".to_string(),
+            content: "hello".to_string()
+        }],
+        install_command: None
+    };
+
+    assert_eq!(configuration.is_valid(), false);
+}
+
+#[test]
+fn test_configuration_valid_with_empty_file_list() {
+    let configuration = configuration::Configuration {
+        packages: vec![],
+        files: vec![],
+        install_command: Some("yum install -y".to_string())
+    };
+
+    assert_eq!(configuration.is_valid(), true);
+}
+
+#[test]
+fn test_return_no_error_messages_if_configuration_is_valid() {
+    let configuration = configuration::Configuration {
+        packages: vec![],
+        files: vec![],
+        install_command: Some("yum install -y".to_string())
+    };
+
+    assert_eq!(configuration.error_messages().is_empty(), true);
+}
+
+#[test]
+fn test_return_error_message_for_invalid_install_command() {
+    let configuration = configuration::Configuration {
+        packages: vec![],
+        files: vec![],
+        install_command: None
+    };
+
+    let messages = configuration.error_messages();
+    assert_eq!(messages.first(), Some(&"No install_command provided".to_string()));
+}
+
+#[test]
+fn test_returns_error_message_for_invalid_file_objects() {
+    let configuration = configuration::Configuration {
+        packages: vec![],
+        files: vec![file::FileResource{
+            path: "".into(),
+            content: "".into()
+        }],
+        install_command: Some("yum install -y".to_string())
+    };
+
+    let messages = configuration.error_messages();
+    assert_eq!(messages.len(), 2);
+}

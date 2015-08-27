@@ -8,6 +8,38 @@ pub struct Configuration {
     pub install_command: Option<String>
 }
 
+impl Configuration {
+    pub fn is_valid(&self) -> bool {
+        let install_command_valid = self.install_command.is_some();
+        let mut files_valid = true;
+        for file_result in self.files.iter().map(|f| f.is_valid()) {
+            if !file_result {
+                files_valid = false;
+                break;
+            }
+        }
+        install_command_valid && files_valid
+    }
+
+    pub fn error_messages(&self) -> Vec<String> {
+        let mut error_messages = Vec::new();
+
+        if !self.install_command.is_some() {
+            error_messages.push("No install_command provided".to_string());
+        }
+
+        let file_errors = self.files.iter()
+                            .flat_map(|f| f.error_messages())
+                            .collect::<Vec<_>>();
+        error_messages.extend(file_errors);
+
+        error_messages
+            .iter()
+            .map(|s| s.to_string())
+            .collect::<Vec<_>>()
+    }
+}
+
 fn convert_yaml_string(yaml_str: &yaml_rust::yaml::Yaml) -> String {
     if let Some(s) = yaml_str.as_str() {
         s.into()
