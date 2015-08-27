@@ -8,7 +8,9 @@ pub fn provision(configuration: &configuration::Configuration) -> i32 {
     let mut packages = Vec::new();
 
     if !configuration.is_valid() {
-        output::print_message(format!("==> Configuration invalid! Abort provisioning."), output::MessageType::Stderr);
+        for error_message in configuration.error_messages() {
+            output::print_message(error_message, output::MessageType::Stderr);
+        }
         return 1;
     }
 
