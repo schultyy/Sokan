@@ -78,5 +78,5 @@ fn install_package(package: &String) -> Output {
     Command::new("sudo")
         .args(&vec!["yum", "install", "-y", package])
         .output()
-        .unwrap_or_else(|e| { panic!("failed to execute process: {}", e) })
+        .unwrap()
 }
