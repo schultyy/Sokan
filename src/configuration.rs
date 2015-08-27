@@ -8,6 +8,20 @@ pub struct Configuration {
     pub install_command: Option<String>
 }
 
+impl Configuration {
+    pub fn is_valid(&self) -> bool {
+        let install_command_valid = self.install_command.is_some();
+        let mut files_valid = true;
+        for file_result in self.files.iter().map(|f| f.is_valid()) {
+            if !file_result {
+                files_valid = false;
+                break;
+            }
+        }
+        install_command_valid && files_valid
+    }
+}
+
 fn convert_yaml_string(yaml_str: &yaml_rust::yaml::Yaml) -> String {
     if let Some(s) = yaml_str.as_str() {
         s.into()

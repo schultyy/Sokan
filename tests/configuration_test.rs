@@ -83,3 +83,17 @@ fn test_returns_configuration_with_a_file_resource_has_all_properties() {
     assert_eq!(file.path, "/home/Jane/hello.txt");
     assert_eq!(file.content, "Hi from John");
 }
+
+#[test]
+fn test_valid_configuration() {
+    let configuration = configuration::Configuration {
+        packages: vec![],
+        files: vec![file::FileResource{
+            path: "/home/john/hello.txt".to_string(),
+            content: "hello".to_string()
+        }],
+        install_command: Some("yum install -y".to_string())
+    };
+
+    assert_eq!(configuration.is_valid(), true);
+}

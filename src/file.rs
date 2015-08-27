@@ -18,4 +18,8 @@ impl FileResource {
             Err(err) => return Err(err)
         }
     }
+
+    pub fn is_valid(&self) -> bool {
+        self.path.len() > 0 && self.content.len() > 0
+    }
 }
