@@ -2,4 +2,14 @@ default:
   packages:
     - vim
     - git
-  package_install_command: "yum install -y"
+    - postgresql
+  package_install_cmd: "yum install -y"
+  files:
+    -
+      path: '/home/vagrant/README'
+      content: >
+
+        # This system is provisioned by Sokan
+
+        # ===================================
+
