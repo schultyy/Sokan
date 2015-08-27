@@ -1,5 +1,4 @@
 use std::process::{Command, Output};
-use std::io::Error;
 use command;
 use configuration;
 use output;

@@ -1,7 +1,6 @@
 use std::fmt::Display;
 use std::fmt::Formatter;
 use std::fmt::Result;
-use std::clone::Clone;
 
 #[derive(Clone)]
 pub struct Command {
