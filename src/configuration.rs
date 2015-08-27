@@ -22,7 +22,11 @@ impl Configuration {
     }
 
     pub fn error_messages(&self) -> Vec<String> {
-        return vec![];
+        if self.install_command.is_some() {
+            vec![]
+        } else {
+            vec!["No install_command provided".into()]
+        }
     }
 }
 

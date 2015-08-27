@@ -133,3 +133,15 @@ fn test_return_no_error_messages_if_configuration_is_valid() {
 
     assert_eq!(configuration.error_messages().is_empty(), true);
 }
+
+#[test]
+fn test_return_error_message_for_invalid_install_command() {
+    let configuration = configuration::Configuration {
+        packages: vec![],
+        files: vec![],
+        install_command: None
+    };
+
+    let messages = configuration.error_messages();
+    assert_eq!(messages.first(), Some(&"No install_command provided".to_string()));
+}
