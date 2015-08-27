@@ -83,10 +83,7 @@ fn handle_file_resources(resources: &Vec<file::FileResource>) -> Vec<i32> {
 fn is_package_installed(package_name: &String) -> bool {
     let command_str = format!("yum list installed {}", package_name);
     let output = Command::new(command_str).output();
-    match output {
-        Ok(_) => return true,
-        Err(_)    => return false
-    }
+    output.is_ok()
 }
 
 fn install_package(package: &String) -> Output {
