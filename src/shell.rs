@@ -1,5 +1,5 @@
 use std::process::{Command, Output};
-use std::io::Error;
+use std::fs;
 use configuration;
 use output;
 use file;
@@ -53,9 +53,28 @@ fn install_packages(package_list: &Vec<String>) -> Vec<i32> {
     exit_codes
 }
 
+fn file_exists(path: &String) -> bool {
+    let metadata = fs::metadata(path);
+
+    match metadata {
+        Ok(md) => md.is_dir() || md.is_file(),
+        Err(_) => false
+    }
+}
+
+fn file_is_equal_to(file_resource: &file::FileResource) -> bool {
+    //TODO better error handling here
+    let other_file = file::FileResource::create_from_path(&file_resource.path).unwrap();
+    other_file.hash() == file_resource.hash()
+}
+
 fn handle_file_resources(resources: &Vec<file::FileResource>) -> Vec<i32> {
     let mut results = Vec::new();
     for resource in resources {
+        if file_exists(&resource.path) && file_is_equal_to(&resource) {
+            results.push(0);
+            continue;
+        }
         let result = resource.write_file();
         match result {
             Ok(_) =>  {

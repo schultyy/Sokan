@@ -11,6 +11,23 @@ pub struct FileResource {
 }
 
 impl FileResource {
+    pub fn create_from_path(path: &String) -> Result<FileResource, Error> {
+        let file_handle = File::open(path);
+        match file_handle {
+            Ok(mut handle) => {
+                let mut contents = String::new();
+                match handle.read_to_string(&mut contents) {
+                    Ok(_) => return Ok(FileResource {
+                        path: path.to_string(),
+                        content: contents.to_string()
+                    }),
+                    Err(err) => return Err(err)
+                }
+            },
+            Err(err) => return Err(err)
+        }
+    }
+
     pub fn write_file(&self) -> Result<(), Error> {
         let file_handle = File::create(&self.path);
         let bytes = self.content.to_string().into_bytes();
