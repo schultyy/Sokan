@@ -5,7 +5,8 @@ use file;
 pub struct Configuration {
     pub packages: Vec<String>,
     pub files: Vec<file::FileResource>,
-    pub install_command: Option<String>
+    pub install_command: Option<String>,
+    pub hostname: String
 }
 
 impl Configuration {
@@ -64,11 +65,21 @@ fn extract_file_resources(file_list: &yaml_rust::yaml::Yaml) -> Vec<file::FileRe
     return file_resources;
 }
 
+pub fn extract_hostname(document: &yaml_rust::yaml::Yaml) -> String {
+    let doc_hash = document.as_hash().unwrap();
+    let keys :Vec<yaml_rust::yaml::Yaml>= doc_hash.keys().cloned().collect();
+    match keys.first() {
+        Some(host_name) => host_name.as_str().unwrap().into(),
+        None            => String::new()
+    }
+}
+
 pub fn from_yaml(yaml_file: String) -> Configuration {
     let docs = YamlLoader::load_from_str(&yaml_file).unwrap();
     let doc = &docs[0];
 
-    let default_node = doc.as_hash().unwrap().get(&Yaml::from_str("default")).unwrap();
+    let hostname = extract_hostname(&doc);
+    let default_node = doc.as_hash().unwrap().get(&Yaml::from_str(&hostname[..])).unwrap();
     let empty_list = Yaml::Array(Vec::new());
     let package_list = default_node.as_hash().unwrap().get(&Yaml::from_str("packages")).unwrap_or(&empty_list);
     let yaml_install_command = default_node.as_hash().unwrap().get(&Yaml::from_str("package_install_cmd"));
@@ -99,6 +110,7 @@ pub fn from_yaml(yaml_file: String) -> Configuration {
     Configuration {
         packages: yaml_packages,
         files: file_resources,
-        install_command: install_cmd
+        install_command: install_cmd,
+        hostname: hostname
     }
 }
