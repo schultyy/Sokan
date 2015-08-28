@@ -3,6 +3,7 @@ use std::io::Error;
 use configuration;
 use output;
 use file;
+use hostname;
 
 pub fn provision(configuration: &configuration::Configuration) -> i32 {
     let mut packages = Vec::new();
@@ -14,11 +15,18 @@ pub fn provision(configuration: &configuration::Configuration) -> i32 {
         return 1;
     }
 
+
     packages.extend(configuration.packages.iter().cloned());
 
     packages.reverse();
 
     let mut exit_codes = Vec::new();
+
+    if set_hostname(&configuration) {
+        exit_codes.push(0);
+    } else {
+        exit_codes.push(1);
+    }
 
     let package_exit_codes = install_packages(&packages);
     exit_codes.extend(&package_exit_codes[..]);
@@ -32,6 +40,23 @@ pub fn provision(configuration: &configuration::Configuration) -> i32 {
         Some(&0) => return 0,
         None     => return 0,
         _        => return 1
+    }
+}
+
+fn set_hostname(configuration: &configuration::Configuration) -> bool {
+    if configuration.hostname == "default" {
+        return true
+    }
+
+    match hostname::set(&configuration.hostname) {
+        true => {
+            output::print_message(format!("==> Set hostname to {}", configuration.hostname), output::MessageType::Stdout);
+            true
+        },
+        false => {
+            output::print_message(format!("==> Failed to set hostname to {}", configuration.hostname), output::MessageType::Stderr);
+            false
+        }
     }
 }
 
