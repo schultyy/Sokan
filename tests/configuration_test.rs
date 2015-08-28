@@ -179,3 +179,16 @@ fn test_config_has_default_hostname() {
     let configuration = configuration::from_yaml(yaml_file.to_string());
     assert_eq!(configuration.hostname, "default".to_string());
 }
+
+#[test]
+fn test_config_has_custom_hostname() {
+    let yaml_file = "
+    srv01:
+      packages:
+        - vim
+        - git
+      package_install_cmd: apt-get install -y
+    ";
+    let configuration = configuration::from_yaml(yaml_file.to_string());
+    assert_eq!(configuration.hostname, "srv01".to_string());
+}
