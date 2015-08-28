@@ -5,7 +5,8 @@ use file;
 pub struct Configuration {
     pub packages: Vec<String>,
     pub files: Vec<file::FileResource>,
-    pub install_command: Option<String>
+    pub install_command: Option<String>,
+    pub hostname: String
 }
 
 impl Configuration {
@@ -99,6 +100,7 @@ pub fn from_yaml(yaml_file: String) -> Configuration {
     Configuration {
         packages: yaml_packages,
         files: file_resources,
-        install_command: install_cmd
+        install_command: install_cmd,
+        hostname: "default".to_string()
     }
 }

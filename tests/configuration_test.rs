@@ -92,7 +92,8 @@ fn test_valid_configuration() {
             path: "/home/john/hello.txt".to_string(),
             content: "hello".to_string()
         }],
-        install_command: Some("yum install -y".to_string())
+        install_command: Some("yum install -y".to_string()),
+        hostname: "".into()
     };
 
     assert_eq!(configuration.is_valid(), true);
@@ -106,7 +107,8 @@ fn test_invalid_configuration() {
             path: "/home/john/hello.txt".to_string(),
             content: "hello".to_string()
         }],
-        install_command: None
+        install_command: None,
+        hostname: "".into()
     };
 
     assert_eq!(configuration.is_valid(), false);
@@ -117,7 +119,8 @@ fn test_configuration_valid_with_empty_file_list() {
     let configuration = configuration::Configuration {
         packages: vec![],
         files: vec![],
-        install_command: Some("yum install -y".to_string())
+        install_command: Some("yum install -y".to_string()),
+        hostname: "".into()
     };
 
     assert_eq!(configuration.is_valid(), true);
@@ -128,7 +131,8 @@ fn test_return_no_error_messages_if_configuration_is_valid() {
     let configuration = configuration::Configuration {
         packages: vec![],
         files: vec![],
-        install_command: Some("yum install -y".to_string())
+        install_command: Some("yum install -y".to_string()),
+        hostname: "".into()
     };
 
     assert_eq!(configuration.error_messages().is_empty(), true);
@@ -139,7 +143,8 @@ fn test_return_error_message_for_invalid_install_command() {
     let configuration = configuration::Configuration {
         packages: vec![],
         files: vec![],
-        install_command: None
+        install_command: None,
+        hostname: "".into()
     };
 
     let messages = configuration.error_messages();
@@ -154,9 +159,23 @@ fn test_returns_error_message_for_invalid_file_objects() {
             path: "".into(),
             content: "".into()
         }],
-        install_command: Some("yum install -y".to_string())
+        install_command: Some("yum install -y".to_string()),
+        hostname: "".into()
     };
 
     let messages = configuration.error_messages();
     assert_eq!(messages.len(), 2);
+}
+
+#[test]
+fn test_config_has_default_hostname() {
+    let yaml_file = "
+    default:
+      packages:
+        - vim
+        - git
+      package_install_cmd: apt-get install -y
+    ";
+    let configuration = configuration::from_yaml(yaml_file.to_string());
+    assert_eq!(configuration.hostname, "default".to_string());
 }
