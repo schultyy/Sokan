@@ -1,6 +1,9 @@
+extern crate crypto;
 use std::io::prelude::*;
 use std::fs::File;
 use std::io::Error;
+use self::crypto::digest::Digest;
+use self::crypto::sha2::Sha256;
 
 pub struct FileResource {
     pub path: String,
@@ -35,5 +38,11 @@ impl FileResource {
         }
 
         error_messages
+    }
+
+    pub fn hash(&self) -> String {
+        let mut sha = Sha256::new();
+        sha.input_str(&self.content);
+        sha.result_str()
     }
 }

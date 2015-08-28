@@ -58,3 +58,13 @@ fn returns_error_message_if_content_is_missing() {
     let messages = file.error_messages();
     assert_eq!(messages.first(), Some(&"File: content is missing".to_string()));
 }
+
+#[test]
+fn returns_a_hash_for_content() {
+    let file = file::FileResource {
+        path: "/home/john/hello.txt".into(),
+        content: "foobar".into()
+    };
+
+    assert_eq!(file.hash().len() > 0, true);
+}
