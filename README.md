@@ -1,36 +1,72 @@
 # Sokan
-Provisioning with Rust
+Sokan is a provisioner written in Rust. It consumes ordinary Yaml configuration files.
 
 ## Configuration
-A machine get's a Yaml file which describes its final state
+You are able to specify the following things in the configuration:
+- A hostname
+- A package install command
+- packages to be installed
+- Files which shall be placed at certains paths with specified content
+
+### Host names
+
+You are able to set a host name for your machine. The host name is set via the top level key:
+
+```yaml
+srv01:
+  #...
+```
+
+Setting it is optional. If you don't want to specify it, leave it to `default`.
 
 ```yaml
 default:
-  files:
-    -
-      path: '/home/jane/hello.txt'
-      content: 'Hello from Jane'
-    -
-      path: '/home/jane/script.sh'
-      content: >
-        #!/bin/bash
-
-        echo "Hello from Bash"
-
-  packages:
-    - vim
-    - git
-  package_install_command: "yum install -y"
+  #...
 ```
 
-Every definition starts with the machine name. If there's only one machine you can use `default`.
+### Packages
+
+Via the `packages` key you're able to specify which packages should be installed on your machine:
+
+```yaml
+default:
+  - packages:
+    - vim
+    - git
+    - postgres
+```
+
+### Files
+
+It is also possible to specify a list of files which need to be present:
+
+```yaml
+default:
+  - files:
+    - 
+      path: '/home/john/.gitconfig`
+      content: >
+      
+        [core]
+	        excludesfile = ~/.gitignore
+	        editor = vim
+	       
+        [push]
+	        default = simple
+```
+
+A file is only written if not existant or if already there, the content is not equal to the one to be written.
 
 ## Apply configuration to machine
 
 ```bash
 $ sokan
 ```
-This requires, that there is a file with `default.yaml`.
+This requires, that there is a file with `default.yaml`. If you want to use another configuration file, pass it as argument:
+
+```bash
+$ sokan other_file.yaml
+```
 
 ## Requirements
 
