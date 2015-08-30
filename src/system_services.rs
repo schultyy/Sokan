@@ -34,19 +34,9 @@ pub fn get_hostname() -> Option<String> {
 }
 
 pub fn set_hostname(new_hostname: &String) -> bool {
-    let current_hostname = get_hostname();
-    match current_hostname {
-        Some(hn) => {
-            if hn == new_hostname.to_string() {
-                return true
-            } else {
-                let output = Command::new("hostname")
-                    .arg(new_hostname)
-                    .output()
-                    .unwrap();
-                output.status.success()
-            }
-        },
-        None => false
-    }
+    let output = Command::new("hostname")
+        .arg(new_hostname)
+        .output()
+        .unwrap();
+    output.status.success()
 }

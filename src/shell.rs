@@ -20,7 +20,7 @@ pub fn provision(configuration: &configuration::Configuration) -> i32 {
 
     let mut exit_codes = Vec::new();
 
-    if set_hostname(&configuration) {
+    if manage_hostname(&configuration) {
         exit_codes.push(0);
     } else {
         exit_codes.push(1);
@@ -41,19 +41,28 @@ pub fn provision(configuration: &configuration::Configuration) -> i32 {
     }
 }
 
-fn set_hostname(configuration: &configuration::Configuration) -> bool {
+fn manage_hostname(configuration: &configuration::Configuration) -> bool {
     if configuration.hostname == "default" {
         return true
     }
 
-    match system_services::set_hostname(&configuration.hostname) {
-        true => {
-            logger::print_message(format!("==> Set hostname to {}", configuration.hostname), logger::MessageType::Stdout);
-            true
-        },
-        false => {
-            logger::print_message(format!("==> Failed to set hostname to {}", configuration.hostname), logger::MessageType::Stderr);
-            false
+    let current_hostname = match system_services::get_hostname() {
+        Some(hn)    => hn,
+        None        => String::new()
+    };
+
+    if current_hostname == configuration.hostname.to_string() {
+        return true
+    } else {
+        match system_services::set_hostname(&configuration.hostname) {
+            true => {
+                logger::print_message(format!("==> Set hostname to {}", configuration.hostname), logger::MessageType::Stdout);
+                true
+            },
+            false => {
+                logger::print_message(format!("==> Failed to set hostname to {}", configuration.hostname), logger::MessageType::Stderr);
+                false
+            }
         }
     }
 }
