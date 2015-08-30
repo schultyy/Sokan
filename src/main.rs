@@ -6,7 +6,7 @@ mod configuration;
 mod shell;
 mod logger;
 mod file;
-mod hostname;
+mod system_services;
 
 fn main() {
     println!("sokan");

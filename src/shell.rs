@@ -1,9 +1,7 @@
-use std::process::{Command, Output};
-use std::fs;
 use configuration;
 use logger;
 use file;
-use hostname;
+use system_services;
 
 pub fn provision(configuration: &configuration::Configuration) -> i32 {
     let mut packages = Vec::new();
@@ -22,7 +20,7 @@ pub fn provision(configuration: &configuration::Configuration) -> i32 {
 
     let mut exit_codes = Vec::new();
 
-    if set_hostname(&configuration) {
+    if manage_hostname(&configuration) {
         exit_codes.push(0);
     } else {
         exit_codes.push(1);
@@ -43,19 +41,28 @@ pub fn provision(configuration: &configuration::Configuration) -> i32 {
     }
 }
 
-fn set_hostname(configuration: &configuration::Configuration) -> bool {
+fn manage_hostname(configuration: &configuration::Configuration) -> bool {
     if configuration.hostname == "default" {
         return true
     }
 
-    match hostname::set(&configuration.hostname) {
-        true => {
-            logger::print_message(format!("==> Set hostname to {}", configuration.hostname), logger::MessageType::Stdout);
-            true
-        },
-        false => {
-            logger::print_message(format!("==> Failed to set hostname to {}", configuration.hostname), logger::MessageType::Stderr);
-            false
+    let current_hostname = match system_services::get_hostname() {
+        Some(hn)    => hn,
+        None        => String::new()
+    };
+
+    if current_hostname == configuration.hostname.to_string() {
+        return true
+    } else {
+        match system_services::set_hostname(&configuration.hostname) {
+            true => {
+                logger::print_message(format!("==> Set hostname to {}", configuration.hostname), logger::MessageType::Stdout);
+                true
+            },
+            false => {
+                logger::print_message(format!("==> Failed to set hostname to {}", configuration.hostname), logger::MessageType::Stderr);
+                false
+            }
         }
     }
 }
@@ -65,10 +72,10 @@ fn install_packages(package_list: &Vec<String>) -> Vec<i32> {
     let mut packages = package_list.clone();
 
     while let Some(package) = packages.pop() {
-        if is_package_installed(&package) {
+        if system_services::is_package_installed(&package) {
             continue;
         }
-        let shellout = install_package(&package);
+        let shellout = system_services::install_package(&package);
         logger::print_shellout::<String>(&package, &shellout);
         let exit_status = shellout.status.clone();
         if exit_status.success() == false {
@@ -76,15 +83,6 @@ fn install_packages(package_list: &Vec<String>) -> Vec<i32> {
         }
     }
     exit_codes
-}
-
-fn file_exists(path: &String) -> bool {
-    let metadata = fs::metadata(path);
-
-    match metadata {
-        Ok(md) => md.is_dir() || md.is_file(),
-        Err(_) => false
-    }
 }
 
 fn file_is_equal_to(file_resource: &file::FileResource) -> bool {
@@ -96,7 +94,7 @@ fn file_is_equal_to(file_resource: &file::FileResource) -> bool {
 fn handle_file_resources(resources: &Vec<file::FileResource>) -> Vec<i32> {
     let mut results = Vec::new();
     for resource in resources {
-        if file_exists(&resource.path) && file_is_equal_to(&resource) {
+        if system_services::file_exists(&resource.path) && file_is_equal_to(&resource) {
             results.push(0);
             continue;
         }
@@ -116,17 +114,4 @@ fn handle_file_resources(resources: &Vec<file::FileResource>) -> Vec<i32> {
         }
     }
     results
-}
-
-fn is_package_installed(package_name: &String) -> bool {
-    let command_str = format!("yum list installed {}", package_name);
-    let output = Command::new(command_str).output();
-    output.is_ok()
-}
-
-fn install_package(package: &String) -> Output {
-    Command::new("yum")
-        .args(&vec!["install", "-y", package])
-        .output()
-        .unwrap()
 }
