@@ -1,5 +1,7 @@
 use std::process::{Command, Output};
 use std::fs;
+use std::io::prelude::*;
+use std::fs::File;
 
 pub fn file_exists(path: &String) -> bool {
     let metadata = fs::metadata(path);
@@ -7,6 +9,18 @@ pub fn file_exists(path: &String) -> bool {
     match metadata {
         Ok(md) => md.is_dir() || md.is_file(),
         Err(_) => false
+    }
+}
+
+pub fn read_file(path: &String) -> Option<String> {
+    let mut file_handle = File::open(path);
+    let mut s = String::new();
+    match file_handle {
+        Ok(mut handle) => {
+            handle.read_to_string(&mut s);
+            Some(s)
+        },
+        Err(err)   => None
     }
 }
 

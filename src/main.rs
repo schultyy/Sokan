@@ -7,6 +7,7 @@ mod shell;
 mod logger;
 mod file;
 mod system_services;
+mod platform;
 
 fn main() {
     println!("sokan");
