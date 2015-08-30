@@ -3,7 +3,7 @@ use std::fs::File;
 use std::process;
 use std::env;
 mod configuration;
-mod shell;
+mod provisioner;
 mod logger;
 mod file;
 mod system_services;
@@ -34,6 +34,6 @@ fn main() {
     }
 
     let configuration = configuration::from_yaml(yaml_file.to_string());
-    let exit_code = shell::provision(&configuration);
+    let exit_code = provisioner::provision(&configuration);
     process::exit(exit_code);
 }
