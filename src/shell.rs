@@ -1,7 +1,7 @@
 use std::process::{Command, Output};
 use std::fs;
 use configuration;
-use output;
+use logger;
 use file;
 use hostname;
 
@@ -10,7 +10,7 @@ pub fn provision(configuration: &configuration::Configuration) -> i32 {
 
     if !configuration.is_valid() {
         for error_message in configuration.error_messages() {
-            output::print_message(error_message, output::MessageType::Stderr);
+            logger::print_message(error_message, logger::MessageType::Stderr);
         }
         return 1;
     }
@@ -50,11 +50,11 @@ fn set_hostname(configuration: &configuration::Configuration) -> bool {
 
     match hostname::set(&configuration.hostname) {
         true => {
-            output::print_message(format!("==> Set hostname to {}", configuration.hostname), output::MessageType::Stdout);
+            logger::print_message(format!("==> Set hostname to {}", configuration.hostname), logger::MessageType::Stdout);
             true
         },
         false => {
-            output::print_message(format!("==> Failed to set hostname to {}", configuration.hostname), output::MessageType::Stderr);
+            logger::print_message(format!("==> Failed to set hostname to {}", configuration.hostname), logger::MessageType::Stderr);
             false
         }
     }
@@ -69,7 +69,7 @@ fn install_packages(package_list: &Vec<String>) -> Vec<i32> {
             continue;
         }
         let shellout = install_package(&package);
-        output::print_shellout::<String>(&package, &shellout);
+        logger::print_shellout::<String>(&package, &shellout);
         let exit_status = shellout.status.clone();
         if exit_status.success() == false {
             exit_codes.push(exit_status.code().unwrap());
@@ -104,13 +104,13 @@ fn handle_file_resources(resources: &Vec<file::FileResource>) -> Vec<i32> {
         match result {
             Ok(_) =>  {
                 let msg = format!("==> Wrote file {}", resource.path);
-                output::print_message(msg, output::MessageType::Stdout);
+                logger::print_message(msg, logger::MessageType::Stdout);
                 results.push(0);
             },
             Err(err) => {
                 let msg = format!("==> Error while writing file {}", resource.path);
-                output::print_message(msg, output::MessageType::Stderr);
-                output::print_message(format!("==> {}", err), output::MessageType::Stderr);
+                logger::print_message(msg, logger::MessageType::Stderr);
+                logger::print_message(format!("==> {}", err), logger::MessageType::Stderr);
                 results.push(1);
             }
         }

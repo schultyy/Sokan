@@ -4,7 +4,7 @@ use std::process;
 use std::env;
 mod configuration;
 mod shell;
-mod output;
+mod logger;
 mod file;
 mod hostname;
 
