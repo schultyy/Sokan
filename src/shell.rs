@@ -1,7 +1,6 @@
 use configuration;
 use logger;
 use file;
-use hostname;
 use system_services;
 
 pub fn provision(configuration: &configuration::Configuration) -> i32 {
@@ -47,7 +46,7 @@ fn set_hostname(configuration: &configuration::Configuration) -> bool {
         return true
     }
 
-    match hostname::set(&configuration.hostname) {
+    match system_services::set_hostname(&configuration.hostname) {
         true => {
             logger::print_message(format!("==> Set hostname to {}", configuration.hostname), logger::MessageType::Stdout);
             true
