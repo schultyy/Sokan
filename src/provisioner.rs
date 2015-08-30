@@ -1,11 +1,19 @@
 use configuration;
 use logger;
 use file;
-use system_services;
+use system_services::SystemServices;
 
-pub struct Provisioner;
+pub struct Provisioner{
+    system_service: SystemServices
+}
 
 impl Provisioner {
+    pub fn new(system_service: SystemServices) -> Provisioner {
+        Provisioner {
+            system_service: system_service
+        }
+    }
+
     pub fn provision(&self, configuration: &configuration::Configuration) -> i32 {
         let mut packages = Vec::new();
 
@@ -49,7 +57,7 @@ impl Provisioner {
             return true
         }
 
-        let current_hostname = match system_services::get_hostname() {
+        let current_hostname = match self.system_service.get_hostname() {
             Some(hn)    => hn,
             None        => String::new()
         };
@@ -57,7 +65,7 @@ impl Provisioner {
         if current_hostname == configuration.hostname.to_string() {
             return true
         } else {
-            match system_services::set_hostname(&configuration.hostname) {
+            match self.system_service.set_hostname(&configuration.hostname) {
                 true => {
                     logger::print_message(format!("==> Set hostname to {}", configuration.hostname), logger::MessageType::Stdout);
                     true
@@ -75,10 +83,10 @@ impl Provisioner {
         let mut packages = package_list.clone();
 
         while let Some(package) = packages.pop() {
-            if system_services::is_package_installed(&package) {
+            if self.system_service.is_package_installed(&package) {
                 continue;
             }
-            let shellout = system_services::install_package(&package);
+            let shellout = self.system_service.install_package(&package);
             logger::print_shellout::<String>(&package, &shellout);
             let exit_status = shellout.status.clone();
             if exit_status.success() == false {
@@ -97,7 +105,7 @@ impl Provisioner {
     fn handle_file_resources(&self, resources: &Vec<file::FileResource>) -> Vec<i32> {
         let mut results = Vec::new();
         for resource in resources {
-            if system_services::file_exists(&resource.path) && self.file_is_equal_to(&resource) {
+            if self.system_service.file_exists(&resource.path) && self.file_is_equal_to(&resource) {
                 results.push(0);
                 continue;
             }

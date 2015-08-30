@@ -1,4 +1,4 @@
-use system_services;
+use system_services::SystemServices;
 
 pub enum PlatformType {
     debian,
@@ -7,8 +7,9 @@ pub enum PlatformType {
 }
 
 pub fn platform() -> PlatformType {
-    if system_services::file_exists(&"/etc/redhat-release".to_string()) ||
-        system_services::file_exists(&"/etc/centos-release".to_string()){
+    let service = SystemServices;
+    if service.file_exists(&"/etc/redhat-release".to_string()) ||
+        service.file_exists(&"/etc/centos-release".to_string()){
             PlatformType::redhat
     } else {
         PlatformType::unknown

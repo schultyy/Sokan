@@ -34,7 +34,8 @@ fn main() {
     }
 
     let configuration = configuration::from_yaml(yaml_file.to_string());
-    let provisioner = provisioner::Provisioner;
+    let service = system_services::SystemServices;
+    let provisioner = provisioner::Provisioner::new(service);
     let exit_code = provisioner.provision(&configuration);
     process::exit(exit_code);
 }
