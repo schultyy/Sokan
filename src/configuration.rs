@@ -5,13 +5,11 @@ use file;
 pub struct Configuration {
     pub packages: Vec<String>,
     pub files: Vec<file::FileResource>,
-    pub install_command: Option<String>,
     pub hostname: String
 }
 
 impl Configuration {
     pub fn is_valid(&self) -> bool {
-        let install_command_valid = self.install_command.is_some();
         let mut files_valid = true;
         for file_result in self.files.iter().map(|f| f.is_valid()) {
             if !file_result {
@@ -19,15 +17,11 @@ impl Configuration {
                 break;
             }
         }
-        install_command_valid && files_valid
+        files_valid
     }
 
     pub fn error_messages(&self) -> Vec<String> {
         let mut error_messages = Vec::new();
-
-        if !self.install_command.is_some() {
-            error_messages.push("No install_command provided".to_string());
-        }
 
         let file_errors = self.files.iter()
                             .flat_map(|f| f.error_messages())
@@ -82,7 +76,6 @@ pub fn from_yaml(yaml_file: String) -> Configuration {
     let default_node = doc.as_hash().unwrap().get(&Yaml::from_str(&hostname[..])).unwrap();
     let empty_list = Yaml::Array(Vec::new());
     let package_list = default_node.as_hash().unwrap().get(&Yaml::from_str("packages")).unwrap_or(&empty_list);
-    let yaml_install_command = default_node.as_hash().unwrap().get(&Yaml::from_str("package_install_cmd"));
     let file_list = default_node.as_hash().unwrap().get(&Yaml::from_str("files")).unwrap_or(&empty_list);
     let mut yaml_packages = Vec::new();
 
@@ -97,20 +90,9 @@ pub fn from_yaml(yaml_file: String) -> Configuration {
 
     let file_resources = extract_file_resources(file_list);
 
-    let mut install_cmd = None;
-
-    match yaml_install_command {
-        Some(cmd) => {
-            let s = cmd.as_str().unwrap();
-            install_cmd = Some(s.to_string())
-        },
-        None => {}
-    }
-
     Configuration {
         packages: yaml_packages,
         files: file_resources,
-        install_command: install_cmd,
         hostname: hostname
     }
 }

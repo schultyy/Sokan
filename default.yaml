@@ -3,7 +3,6 @@ default:
     - vim
     - git
     - postgresql
-  package_install_cmd: "yum install -y"
   files:
     -
       path: '/home/vagrant/README'
