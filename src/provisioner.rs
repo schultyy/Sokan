@@ -1,7 +1,7 @@
 use configuration;
 use logger;
 use file;
-use system_services::SystemServices;
+use system_services::{SystemServices, SystemInterface};
 
 pub struct Provisioner{
     system_service: SystemServices

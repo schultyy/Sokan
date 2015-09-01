@@ -1,4 +1,4 @@
-use system_services::SystemServices;
+use system_services::{SystemServices, SystemInterface};
 
 pub enum PlatformType {
     debian,
