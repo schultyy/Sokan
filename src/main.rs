@@ -2,6 +2,7 @@ use std::io::prelude::*;
 use std::fs::File;
 use std::process;
 use std::env;
+use system_services::SystemInterface;
 mod configuration;
 mod provisioner;
 mod logger;
@@ -35,7 +36,12 @@ fn main() {
 
     let configuration = configuration::from_yaml(yaml_file.to_string());
     let service = system_services::SystemServices;
-    let provisioner = provisioner::Provisioner::new(service);
-    let exit_code = provisioner.provision(&configuration);
+    let provisioner = provisioner::Provisioner::new(service.clone());
+
+    let exit_code = match service.platform() {
+        system_services::OSType::redhat  => provisioner.provision(&configuration),
+        _                                => 1
+    };
+
     process::exit(exit_code);
 }

@@ -1,17 +1,21 @@
-use system_services::{SystemServices, SystemInterface};
+use system_services::{SystemServices, SystemInterface, OSType};
 
-pub enum PlatformType {
-    debian,
-    redhat,
-    unknown
+
+pub struct Platform {
+    pub install_command: String,
+    pub package_installed_command: String
 }
 
-pub fn platform() -> PlatformType {
-    let service = SystemServices;
-    if service.file_exists(&"/etc/redhat-release".to_string()) ||
-        service.file_exists(&"/etc/centos-release".to_string()){
-            PlatformType::redhat
-    } else {
-        PlatformType::unknown
+impl Platform {
+    pub fn for_os_type(os_type: OSType) -> Option<Platform> {
+        match os_type {
+            OSType::redhat => {
+                Some(Platform {
+                    install_command: "yum install -y".into(),
+                    package_installed_command: "yum list installed".into()
+                })
+            },
+            _ => None
+        }
     }
 }

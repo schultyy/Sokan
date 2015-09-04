@@ -2,8 +2,16 @@ use std::process::{Command, Output};
 use std::fs;
 use std::io::prelude::*;
 use std::fs::File;
+use platform;
 
+#[derive(Clone)]
 pub struct SystemServices;
+
+pub enum OSType {
+    debian,
+    redhat,
+    unknown
+}
 
 pub trait SystemInterface {
     fn file_exists(&self, path: &String) -> bool;
@@ -12,6 +20,7 @@ pub trait SystemInterface {
     fn install_package(&self, package: &String) -> Output;
     fn get_hostname(&self) -> Option<String>;
     fn set_hostname(&self, new_hostname: &String) -> bool;
+    fn platform(&self) -> OSType;
 }
 
 impl SystemInterface for SystemServices {
@@ -65,5 +74,14 @@ impl SystemInterface for SystemServices {
             .output()
             .unwrap();
         output.status.success()
+    }
+
+    fn platform(&self) -> OSType {
+        if self.file_exists(&"/etc/redhat-release".to_string()) ||
+            self.file_exists(&"/etc/centos-release".to_string()){
+                OSType::redhat
+            } else {
+                OSType::unknown
+            }
     }
 }
