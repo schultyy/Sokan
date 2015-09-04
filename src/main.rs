@@ -38,7 +38,7 @@ fn main() {
     let service = system_services::SystemServices;
     let provisioner = provisioner::Provisioner::new(service.clone());
 
-    let exit_code = match service.platform() {
+    let exit_code = match service.os_type() {
         system_services::OSType::redhat  => provisioner.provision(&configuration),
         _                                => {
             logger::print_message("Unsupported platform".into(), logger::MessageType::Stderr);

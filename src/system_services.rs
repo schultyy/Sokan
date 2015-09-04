@@ -20,7 +20,7 @@ pub trait SystemInterface {
     fn install_package(&self, package: &String) -> Output;
     fn get_hostname(&self) -> Option<String>;
     fn set_hostname(&self, new_hostname: &String) -> bool;
-    fn platform(&self) -> OSType;
+    fn os_type(&self) -> OSType;
 }
 
 impl SystemInterface for SystemServices {
@@ -76,7 +76,7 @@ impl SystemInterface for SystemServices {
         output.status.success()
     }
 
-    fn platform(&self) -> OSType {
+    fn os_type(&self) -> OSType {
         if self.file_exists(&"/etc/redhat-release".to_string()) ||
             self.file_exists(&"/etc/centos-release".to_string()){
                 OSType::redhat
