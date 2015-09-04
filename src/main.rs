@@ -40,7 +40,10 @@ fn main() {
 
     let exit_code = match service.platform() {
         system_services::OSType::redhat  => provisioner.provision(&configuration),
-        _                                => 1
+        _                                => {
+            logger::print_message("Unsupported platform".into(), logger::MessageType::Stderr);
+            1
+        }
     };
 
     process::exit(exit_code);
