@@ -33,7 +33,7 @@ impl SystemInterface for SystemServices {
     }
 
      fn read_file(&self, path: &String) -> Option<String> {
-        let mut file_handle = File::open(path);
+        let file_handle = File::open(path);
         let mut s = String::new();
         match file_handle {
             Ok(mut handle) => {
