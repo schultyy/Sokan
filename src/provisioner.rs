@@ -90,9 +90,7 @@ impl Provisioner {
             let shellout = self.system_service.install_package(&package);
             logger::print_shellout::<String>(&package, &shellout);
             let exit_status = shellout.status.clone();
-            if exit_status.success() == false {
-                exit_codes.push(exit_status.code().unwrap());
-            }
+            exit_codes.push(exit_status.code().unwrap());
         }
         exit_codes
     }
