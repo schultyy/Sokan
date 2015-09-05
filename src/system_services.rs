@@ -8,9 +8,9 @@ use platform;
 pub struct SystemServices;
 
 pub enum OSType {
-    debian,
-    redhat,
-    unknown
+    Debian,
+    Redhat,
+    Unknown
 }
 
 pub trait SystemInterface {
@@ -94,9 +94,9 @@ impl SystemInterface for SystemServices {
     fn os_type(&self) -> OSType {
         if self.file_exists(&"/etc/redhat-release".to_string()) ||
             self.file_exists(&"/etc/centos-release".to_string()){
-                OSType::redhat
+                OSType::Redhat
             } else {
-                OSType::unknown
+                OSType::Unknown
             }
     }
 }

@@ -8,7 +8,7 @@ pub struct Platform {
 
 pub fn for_os_type(os_type: OSType) -> Option<Platform> {
     match os_type {
-        OSType::redhat => {
+        OSType::Redhat => {
             Some(Platform {
                 install_command: "yum install -y".into(),
                 package_installed_command: "yum list installed".into()
