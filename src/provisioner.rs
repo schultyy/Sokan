@@ -88,8 +88,14 @@ impl Provisioner {
                 continue;
             }
             let shellout = self.system_service.install_package(&package);
-            logger::print_shellout::<String>(&package, &shellout);
             let exit_status = shellout.status.clone();
+            exit_codes.push(exit_status.code().unwrap());
+            if exit_status.success() {
+                logger::print_message(format!("Successfully installed {}", package), logger::MessageType::Stdout);
+            } else {
+                logger::print_message(format!("Failed to install {}", package), logger::MessageType::Stderr);
+                logger::print_shellout::<String>(&package, &shellout);
+            }
             exit_codes.push(exit_status.code().unwrap());
         }
         exit_codes

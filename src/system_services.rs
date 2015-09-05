@@ -48,8 +48,15 @@ impl SystemInterface for SystemServices {
      fn is_package_installed(&self, package_name: &String) -> bool {
         let platform = platform::for_os_type(self.os_type()).unwrap();
         let command_str = format!("{} {}", platform.package_installed_command, package_name);
-        let output = Command::new(command_str).output();
-        output.is_ok()
+        let cmd_list :Vec<&str> = command_str.split_whitespace().collect();
+        let cmd_name :String = cmd_list.first().unwrap().to_string();
+        let mut cmd_args = Vec::new();
+        cmd_args.extend(cmd_list.iter().skip(1).map(|s| s.to_string()).collect::<Vec<_>>());
+
+        match Command::new(cmd_name).args(&cmd_args[..]).output() {
+            Ok(output) => output.status.success(),
+            Err(err)   => false
+        }
     }
 
      fn install_package(&self, package: &String) -> Output {
