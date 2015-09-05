@@ -1,7 +1,6 @@
 use configuration;
 use logger;
 use file;
-use platform;
 use system_services::{SystemServices, SystemInterface};
 
 pub struct Provisioner{

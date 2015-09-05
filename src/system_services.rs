@@ -8,9 +8,8 @@ use platform;
 pub struct SystemServices;
 
 pub enum OSType {
-    debian,
-    redhat,
-    unknown
+    Redhat,
+    Unknown
 }
 
 pub trait SystemInterface {
@@ -34,14 +33,17 @@ impl SystemInterface for SystemServices {
     }
 
      fn read_file(&self, path: &String) -> Option<String> {
-        let mut file_handle = File::open(path);
+        let file_handle = File::open(path);
         let mut s = String::new();
         match file_handle {
             Ok(mut handle) => {
-                handle.read_to_string(&mut s);
-                Some(s)
+                if handle.read_to_string(&mut s).is_ok() {
+                    Some(s)
+                } else {
+                    None
+                }
             },
-            Err(err)   => None
+            Err(_)   => None
         }
     }
 
@@ -55,7 +57,7 @@ impl SystemInterface for SystemServices {
 
         match Command::new(cmd_name).args(&cmd_args[..]).output() {
             Ok(output) => output.status.success(),
-            Err(err)   => false
+            Err(_)   => false
         }
     }
 
@@ -94,9 +96,9 @@ impl SystemInterface for SystemServices {
     fn os_type(&self) -> OSType {
         if self.file_exists(&"/etc/redhat-release".to_string()) ||
             self.file_exists(&"/etc/centos-release".to_string()){
-                OSType::redhat
+                OSType::Redhat
             } else {
-                OSType::unknown
+                OSType::Unknown
             }
     }
 }
