@@ -8,7 +8,6 @@ use platform;
 pub struct SystemServices;
 
 pub enum OSType {
-    Debian,
     Redhat,
     Unknown
 }
