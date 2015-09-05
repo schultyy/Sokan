@@ -2,11 +2,13 @@ use std::io::prelude::*;
 use std::fs::File;
 use std::process;
 use std::env;
+use system_services::SystemInterface;
 mod configuration;
-mod shell;
+mod provisioner;
 mod logger;
 mod file;
 mod system_services;
+mod platform;
 
 fn main() {
     println!("sokan");
@@ -33,6 +35,16 @@ fn main() {
     }
 
     let configuration = configuration::from_yaml(yaml_file.to_string());
-    let exit_code = shell::provision(&configuration);
+    let service = system_services::SystemServices;
+    let provisioner = provisioner::Provisioner::new(service.clone());
+
+    let exit_code = match service.os_type() {
+        system_services::OSType::redhat  => provisioner.provision(&configuration),
+        _                                => {
+            logger::print_message("Unsupported platform".into(), logger::MessageType::Stderr);
+            1
+        }
+    };
+
     process::exit(exit_code);
 }
