@@ -46,14 +46,22 @@ impl SystemInterface for SystemServices {
     }
 
      fn is_package_installed(&self, package_name: &String) -> bool {
-        let command_str = format!("yum list installed {}", package_name);
+        let platform = platform::for_os_type(self.os_type()).unwrap();
+        let command_str = format!("{} {}", platform.package_installed_command, package_name);
         let output = Command::new(command_str).output();
         output.is_ok()
     }
 
      fn install_package(&self, package: &String) -> Output {
-        Command::new("yum")
-            .args(&vec!["install", "-y", package])
+        let platform = platform::for_os_type(self.os_type()).unwrap();
+        let cmd_list :Vec<&str> = platform.install_command.split_whitespace().collect();
+        let cmd_name :String = cmd_list.first().unwrap().to_string();
+        let mut cmd_args = Vec::new();
+        cmd_args.extend(cmd_list.iter().skip(1).map(|s| s.to_string()).collect::<Vec<_>>());
+        cmd_args.push(package.to_string());
+
+        Command::new(cmd_name)
+            .args(&cmd_args[..])
             .output()
             .unwrap()
     }
