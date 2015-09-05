@@ -40,7 +40,7 @@ impl SystemInterface for SystemServices {
                 handle.read_to_string(&mut s);
                 Some(s)
             },
-            Err(err)   => None
+            Err(_)   => None
         }
     }
 
@@ -54,7 +54,7 @@ impl SystemInterface for SystemServices {
 
         match Command::new(cmd_name).args(&cmd_args[..]).output() {
             Ok(output) => output.status.success(),
-            Err(err)   => false
+            Err(_)   => false
         }
     }
 
