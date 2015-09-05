@@ -37,8 +37,11 @@ impl SystemInterface for SystemServices {
         let mut s = String::new();
         match file_handle {
             Ok(mut handle) => {
-                handle.read_to_string(&mut s);
-                Some(s)
+                if handle.read_to_string(&mut s).is_ok() {
+                    Some(s)
+                } else {
+                    None
+                }
             },
             Err(_)   => None
         }
