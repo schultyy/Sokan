@@ -14,10 +14,14 @@ fn main() {
     println!("sokan");
     let mut filename = "default.yaml".to_string();
 
-    if env::args().len() > 1 {
-        let mut args_iterator = env::args().skip(1);
-        filename = args_iterator.next().unwrap().to_string();
+    if env::args().len() < 2 {
+        println!("No arguments provided");
+        println!("Usage");
+        println!("sokan <configuration_file>");
+        process::exit(2);
     }
+    let mut args_iterator = env::args().skip(1);
+    filename = args_iterator.next().unwrap().to_string();
 
     let mut file_result :std::fs::File;
     match File::open(&filename) {
