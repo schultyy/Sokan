@@ -43,14 +43,14 @@ It is also possible to specify a list of files which need to be present:
 ```yaml
 default:
   - files:
-    - 
+    -
       path: '/home/john/.gitconfig`
       content: >
-      
+
         [core]
 	        excludesfile = ~/.gitignore
 	        editor = vim
-	       
+
         [push]
 	        default = simple
 ```
@@ -59,13 +59,10 @@ A file is only written if not existant or if already there, the content is not e
 
 ## Apply configuration to machine
 
-```bash
-$ sokan
-```
-This requires, that there is a file with `default.yaml`. If you want to use another configuration file, pass it as argument:
+You need to pass the configuration file as an argument:
 
 ```bash
-$ sokan other_file.yaml
+$ sokan default.yaml
 ```
 
 ## Requirements
