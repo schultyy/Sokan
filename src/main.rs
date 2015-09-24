@@ -9,6 +9,7 @@ mod logger;
 mod file;
 mod system_services;
 mod platform;
+mod platform_support;
 
 fn main() {
     println!("sokan");
@@ -42,13 +43,22 @@ fn main() {
     let service = system_services::SystemServices;
     let provisioner = provisioner::Provisioner::new(service.clone());
 
-    let exit_code = match service.os_type() {
-        system_services::OSType::Redhat  => provisioner.provision(&configuration),
-        _                                => {
-            logger::print_message("Unsupported platform".into(), logger::MessageType::Stderr);
-            1
-        }
-    };
+    let exit_code;
+
+    if platform_support::is_supported() {
+        exit_code = provisioner.provision(&configuration);
+    } else {
+        logger::print_message("Unsupported platform".into(), logger::MessageType::Stderr);
+        exit_code = 1;
+    }
+
+    // let exit_code = match service.os_type() {
+    //     system_services::OSType::Redhat  => provisioner.provision(&configuration),
+    //     _                                => {
+    //         logger::print_message("Unsupported platform".into(), logger::MessageType::Stderr);
+    //         1
+    //     }
+    // };
 
     process::exit(exit_code);
 }
