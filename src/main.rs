@@ -9,14 +9,7 @@ mod logger;
 mod file;
 mod system_services;
 mod platform;
-
-fn is_supported() -> bool {
-    let service = system_services::SystemServices;
-    match service.os_type() {
-        system_services::OSType::Redhat => true,
-        _ => false
-    }
-}
+mod platform_support;
 
 fn main() {
     println!("sokan");
@@ -52,7 +45,7 @@ fn main() {
 
     let exit_code;
 
-    if is_supported() {
+    if platform_support::is_supported() {
         exit_code = provisioner.provision(&configuration);
     } else {
         logger::print_message("Unsupported platform".into(), logger::MessageType::Stderr);
