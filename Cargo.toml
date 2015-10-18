@@ -6,3 +6,4 @@ authors = ["Jan Schulte <hello@unexpected-co.de>"]
 yaml-rust = "0.2.*"
 term = "0.2"
 rust-crypto = "0.2.31"
+os_type="0.1.0"
