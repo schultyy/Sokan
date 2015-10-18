@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/schultyy/sokan.svg?branch=master)](https://travis-ci.org/schultyy/sokan)
+
 # Sokan
 Sokan is a provisioner written in Rust. It consumes ordinary Yaml configuration files.
 
