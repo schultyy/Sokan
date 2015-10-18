@@ -3,6 +3,7 @@ use std::fs::File;
 use std::process;
 use std::env;
 use system_services::SystemInterface;
+extern crate os_type;
 mod configuration;
 mod provisioner;
 mod logger;

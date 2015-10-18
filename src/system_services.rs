@@ -3,14 +3,10 @@ use std::fs;
 use std::io::prelude::*;
 use std::fs::File;
 use platform;
+extern crate os_type;
 
 #[derive(Clone)]
 pub struct SystemServices;
-
-pub enum OSType {
-    Redhat,
-    Unknown
-}
 
 pub trait SystemInterface {
     fn file_exists(&self, path: &String) -> bool;
@@ -19,7 +15,7 @@ pub trait SystemInterface {
     fn install_package(&self, package: &String) -> Output;
     fn get_hostname(&self) -> Option<String>;
     fn set_hostname(&self, new_hostname: &String) -> bool;
-    fn os_type(&self) -> OSType;
+    fn os_type(&self) -> os_type::OSType;
 }
 
 impl SystemInterface for SystemServices {
@@ -93,12 +89,7 @@ impl SystemInterface for SystemServices {
         output.status.success()
     }
 
-    fn os_type(&self) -> OSType {
-        if self.file_exists(&"/etc/redhat-release".to_string()) ||
-            self.file_exists(&"/etc/centos-release".to_string()){
-                OSType::Redhat
-            } else {
-                OSType::Unknown
-            }
+    fn os_type(&self) -> os_type::OSType {
+        os_type::current_platform()
     }
 }
